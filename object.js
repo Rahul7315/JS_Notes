@@ -292,7 +292,7 @@ console.log(para.dataset.newTitle);
 //The second parameter is the function we want to call when the event occurs.
 //The third parameter is a boolean value specifying whether to use event bubbling or event capturing. This parameter is optional.
 
-//type of event: mouseover, mouseout, click
+//type of event: mouseover, mouseout, click, onerror
 //document.getElementById("myBtn").addEventListener("click", displayDate); or
 //btn.addEventlisterner("click", e=>{ //code });
 
@@ -314,7 +314,8 @@ btnmsg.addEventListener('click', e => {
 //the promises will work in background when it will done, the function will notify you. it provide facilities to function to run parallel
 //if there is multiple promises in that case it will excute togather.
 //there are two methods:.then() & .catch()
-
+//we can set multiple promise handlers using .then()
+//promise chaining & multiple handle are different 
 
 //promise
 const p = new Promise((resolve,reject) => {
@@ -359,8 +360,112 @@ const m = new Promise((resolve, reject) => {
     }
   );
 
-
+//to load script using promises 
+const loadscript = (src) => {
+    //create promise
+    return new Promise((resolve, reject) => {
+        //create element
+      let body = document.querySelector('#body');
+      let script = document.createElement('script');
+      script.type = "text/javascript";
+      script.src = src;
+        //load element
+      script.onload = () => {
+        console.log("Script loaded successfully");
+        resolve("Done");
+      };
+        //on error
+      script.onerror = () => {
+        console.log("Error loading script");
+        reject("Not done");
+      };
+      //add script into body
+      body.appendChild(script);
+    });
+  };
   
+  //pass the value
+  let t1 = loadscript("https://www.google.com");
+  //catch error or value
+  t1.then(
+    (value) => {
+      console.log(value);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+  
+  //promises chaining: we can create multiple promises inside .then method, to one promises after that we can add new promises & using then we can 
+  //display it & it will return value to the next promises 
+  let p1 = new Promise((resolve,reject)=>{
+    setTimeout(function() {
+      console.log("Hello1");
+      resolve("Promises Approved")
+    }, 3000);
+  })
+  
+  p1.then((value)=>{
+      console.log(value);
+      let p2 = new Promise((resolve,reject)=>{
+          console.log("hello2");
+          resolve("approved");
+      })
+      return p2
+  }).then((value)=>{
+      console.log(value);
+  })
+
+  //promises API
+  //promise.all: It will generate the all result togather at same time. 
+  //ex: const allpromise = Promise.all([p1,p2,p3]); & using.then print the value
+  //promise.allSettled: if any promise reject in that case other promise provide result
+  //ex: const allsettlePromise= Promise.allSettle([p1,p2,p3])
+  //promise.race: provide result of which promise give fast result
+  //promise.resolve: provide resolved promise with value
+  //promise.reject: provide reject promise with error
+  
+
+  //Async/await: 
+  // we can make any function to Async function & we can await that function
+  // async return promise of any value
+  //example: using promies & we can use any function 
+  console.log("stduent details");
+//main function
+async function studentData() {
+ //promise
+let studentDetails = new Promise((resolve,error)=>{
+    setTimeout(function(){
+        resolve("Name:Rahul");
+    },5000)
+})
+
+let studentMarks = new Promise((resolve,error)=>{
+    setTimeout(function(){
+        resolve("Mark:50");
+    },8000)
+})
+//await the studentDetails
+ let a = await studentDetails;
+ console.log(a);
+ //await the studentMarks
+ let b = await studentMarks;
+ console.log(b);
+ return [a,b];
+}
+
+let c = studentData();
+//print the value of promise 
+c.then((value)=>{
+    console.log(value);
+})
+let x = c.toString();
+console.log(x);
+
+
+
+
+
   
 
 
